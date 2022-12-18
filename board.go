@@ -1,25 +1,59 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
 
 func printBoard() {
 	//make sure the values are initialized at 0 for each board
+
 	//loop over the 10 slices
 	for x := range player1Board {
-		//loop over the 10 values inside the slice
+		//iterate over Y axis slice
 		for y := 0; y <= (len(player1Board[x]) - 1); y++ {
-			player1Board[x][y] = 0
-			player2Board[x][y] = 0
+			player1Board[x][y] = 0 //reset the board values to zero, mainly to be used for when restarting the game
+			player2Board[x][y] = 0 //both boards are equal in size (10x10) so lets reset the values for the second board as well
 		}
 	}
+
+	//Player 1 places their ships
+	shipPlacementPlayer1()
+
+	//Player 2 places their ships
+	//shipPlacementPlayer2()
+}
+
+func shipPlacementPlayer1() {
+	//Show the starting board
 	playerBoard1()
+
+	//Store the various ship data for player 1
+	player1Ships = make([]Ship, len(boardShipSize))
+
+	//Create a reader with a default size buffer to temporarily store any text input data
+	readerBuffer := bufio.NewReader(os.Stdin)
+
+	//iterate over the number of ships
+	for i := 0; i < len(boardShipSize); {
+		fmt.Printf("Ship Name: %s\n", boardShipName[i])
+		fmt.Printf("Ship Size: %s\n", strconv.Itoa(boardShipSize[i]))
+		fmt.Printf("Direction (H/V): ")
+		direction, _ := readerBuffer.ReadString('\n') //store data in the var and use a new line as the delimiter
+		fmt.Println(strings.TrimSpace(direction))
+
+	}
+
 }
 
 func playerBoard1() {
 	fmt.Print("Player 1 Board:\n ")
 
 	//iterate the X axis and only grab the key to use as the position/number
-	for x := range boardAxisX {
+	for x := range boardAxisY {
 		if x == 0 {
 			//have double spaces at the first iteration for cleaner looking printing
 			fmt.Printf("  %d ", x)
@@ -33,11 +67,15 @@ func playerBoard1() {
 	//iterate over the Y axis and use the key to get the value to print position/letter
 	for x := range player1Board {
 		//use the key to as the letter position and print it
-		fmt.Print(boardAxisX[x] + " ")
-		for y := range player1Board {
+		fmt.Print(boardAxisY[x] + " ")
+
+		//iterate over Y axis slice regardless of its value being 0 or 1
+		for y := 0; y <= (len(player1Board[x]) - 1); y++ {
 			if player1Board[x][y] == 0 {
 				fmt.Print(" 0")
+				//When the sea is empty then print 0
 			} else if player1Board[x][y] == 1 {
+				//When ship is present print S
 				fmt.Print(" S")
 			}
 		}
@@ -47,7 +85,7 @@ func playerBoard1() {
 
 //iterate the X axis and only grab the key to use as the position/number
 /*
-	for i, v := range boardAxisXTest {
+	for i, v := range boardAxisYTest {
 		if i == 0 {
 			//have double spaces at the first iteration for cleaner looking printing
 			fmt.Printf("  %s ", string(v))

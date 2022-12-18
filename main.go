@@ -8,8 +8,24 @@ var (
 	player1Board [10][10]int //contains the board of 10 slice (x) of 10 numbers each (y)
 	player2Board [10][10]int //contains the board of 10 slice (x) of 10 numbers each (y)
 
-	boardAxisX = [10]string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
+	boardAxisY = [10]string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
+
+	boardShipSize = [5]int{2, 3, 3, 4, 5}                                                   //Ship sizes decided by the official game rules
+	boardShipName = [5]string{"Destroyer", "Submarine", "Cruiser", "Battleship", "Carrier"} //Ship names decided by the official game rules
+
+	player1Ships []Ship
+	player2Ships []Ship
 )
+
+type Ship struct {
+	sunk     bool
+	size     int
+	position []Position
+}
+
+type Position struct {
+	x, y int
+}
 
 func main() {
 
