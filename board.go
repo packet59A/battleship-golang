@@ -37,22 +37,26 @@ func shipPlacementPlayer1() {
 	//Create a reader with a default size buffer to temporarily store any text input data
 	readerBuffer := bufio.NewReader(os.Stdin)
 
-	//iterate over the number of ships
+	//iterate over the number of ships (should run 5 times since there are 5 ships only)
 	for i := 0; i < len(boardShipSize); {
 		fmt.Print("\n\n")
 		fmt.Printf("Ship Name: %s\n", boardShipName[i])               //print ship name to the player
 		fmt.Printf("Ship Size: %s\n", strconv.Itoa(boardShipSize[i])) //print ship size to the player
 		fmt.Print("Direction (H/V): ")                                //ask for ship direction for placing it on the board
 		direction, _ := readerBuffer.ReadString('\n')                 //store data in the var and use a new line as the delimiter
-		direction = strings.TrimSpace(direction)                      //remove whitespace and tabspace from the string that was just read
+		direction = strings.ToUpper(strings.TrimSpace(direction))     //remove whitespace and tabspace from the string that was just read and make everything uppercase
 		if (direction == "H") || (direction == "V") {
 			fmt.Print("Ship Coordinates: ")
 			coordinates, _ := readerBuffer.ReadString('\n')
-			coordinates = strings.TrimSpace(coordinates)
+			coordinates = strings.ToUpper(strings.TrimSpace(coordinates)) //remove whitespace and tabspace from the string that was just read and make everything uppercase
+
 			//Only grab the 1st 2 chars of the coordinates and verify they are formatted correctly
 			coordinates, verified := verifyCoordsFormat(coordinates[0:1], coordinates[1:2])
 			if verified {
 				fmt.Println("Coordinates:", coordinates)
+				boardCoords := transformCoordinates(coordinates)
+				fmt.Println(boardCoords)
+				i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
 			} else {
 				fmt.Println("Wrong input for ship coordinates")
 			}
@@ -62,27 +66,6 @@ func shipPlacementPlayer1() {
 			fmt.Println("Wrong input for ship direction")
 		}
 	}
-}
-
-func verifyCoordsFormat(xAxis, yAxis string) (string, bool) {
-
-	//get char1 rune
-	for _, r := range xAxis {
-		//verifies if rune value is corresponding to "ABCDEFGHIJ"
-		if !(r > 64 && r < 75) {
-			return "", false
-		}
-	}
-
-	//get char2 rune
-	for _, r := range yAxis {
-		//verifies if rune value is corresponding to "012345789"
-		if !(r > 47 && r < 58) {
-			return "", false
-		}
-	}
-
-	return xAxis + yAxis, true
 }
 
 func playerBoard1() {
