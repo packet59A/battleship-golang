@@ -6,7 +6,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"unicode"
 )
 
 func printBoard() {
@@ -66,14 +65,19 @@ func shipPlacementPlayer1() {
 }
 
 func verifyCoordsFormat(xAxis, yAxis string) (string, bool) {
+
+	//get char1 rune
 	for _, r := range xAxis {
-		if !unicode.IsLetter(r) {
+		//verifies if rune value is corresponding to "ABCDEFGHIJ"
+		if !(r > 64 && r < 75) {
 			return "", false
 		}
 	}
 
+	//get char2 rune
 	for _, r := range yAxis {
-		if !unicode.IsDigit(r) {
+		//verifies if rune value is corresponding to "012345789"
+		if !(r > 47 && r < 58) {
 			return "", false
 		}
 	}
