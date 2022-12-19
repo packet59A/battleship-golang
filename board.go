@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 func printBoard() {
@@ -40,14 +41,44 @@ func shipPlacementPlayer1() {
 	//iterate over the number of ships
 	for i := 0; i < len(boardShipSize); {
 		fmt.Print("\n\n")
-		fmt.Printf("Ship Name: %s\n", boardShipName[i])
-		fmt.Printf("Ship Size: %s\n", strconv.Itoa(boardShipSize[i]))
-		fmt.Printf("Direction (H/V): ")
-		direction, _ := readerBuffer.ReadString('\n') //store data in the var and use a new line as the delimiter
-		fmt.Println(strings.TrimSpace(direction))
+		fmt.Printf("Ship Name: %s\n", boardShipName[i])               //print ship name to the player
+		fmt.Printf("Ship Size: %s\n", strconv.Itoa(boardShipSize[i])) //print ship size to the player
+		fmt.Print("Direction (H/V): ")                                //ask for ship direction for placing it on the board
+		direction, _ := readerBuffer.ReadString('\n')                 //store data in the var and use a new line as the delimiter
+		direction = strings.TrimSpace(direction)                      //remove whitespace and tabspace from the string that was just read
+		if (direction == "H") || (direction == "V") {
+			fmt.Print("Ship Coordinates: ")
+			coordinates, _ := readerBuffer.ReadString('\n')
+			coordinates = strings.TrimSpace(coordinates)
+			//Only grab the 1st 2 chars of the coordinates and verify they are formatted correctly
+			coordinates, verified := verifyCoordsFormat(coordinates[0:1], coordinates[1:2])
+			if verified {
+				fmt.Println("Coordinates:", coordinates)
+			} else {
+				fmt.Println("Wrong input for ship coordinates")
+			}
 
+		} else {
+			//if input is wrong then keep looping over until we get the correct direction and print the wrong direction message
+			fmt.Println("Wrong input for ship direction")
+		}
+	}
+}
+
+func verifyCoordsFormat(xAxis, yAxis string) (string, bool) {
+	for _, r := range xAxis {
+		if !unicode.IsLetter(r) {
+			return "", false
+		}
 	}
 
+	for _, r := range yAxis {
+		if !unicode.IsDigit(r) {
+			return "", false
+		}
+	}
+
+	return xAxis + yAxis, true
 }
 
 func playerBoard1() {
