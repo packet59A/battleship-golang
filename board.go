@@ -55,8 +55,14 @@ func shipPlacementPlayer1() {
 			if verified {
 				fmt.Println("Coordinates:", coordinates)
 				boardCoords := transformCoordinates(coordinates)
-				fmt.Println(boardCoords)
-				i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
+				shipPlaced := spawnShipCoordinates(1, player1Board, player1Ships, boardCoords, direction, i)
+				if shipPlaced {
+					i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
+					//fmt.Print("\033[H\033[2J") //clear console ahead of next ship placement
+					playerBoard1() //print updated playerboard
+				} else {
+					fmt.Println("Unable to place ship at these coordinates")
+				}
 			} else {
 				fmt.Println("Wrong input for ship coordinates")
 			}
@@ -88,7 +94,6 @@ func playerBoard1() {
 	for x := range player1Board {
 		//use the key to as the letter position and print it
 		fmt.Print(boardAxisY[x])
-
 		//iterate over Y axis slice regardless of its value being 0 or 1
 		for y := 0; y <= (len(player1Board[x]) - 1); y++ {
 			if player1Board[x][y] == 0 {

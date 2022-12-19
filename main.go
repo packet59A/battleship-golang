@@ -29,6 +29,17 @@ type Position struct {
 	x, y int
 }
 
+func (ship *Ship) addCoords(xPos, yPos, index int) {
+	//fmt.Println("xP", xP, "yP", yP, "index", index)
+	ship.position[index] = Position{x: xPos, y: yPos}
+}
+
+func (ship *Ship) create(shipSize int) {
+	ship.size = shipSize
+	ship.sunk = false
+	ship.position = make([]Position, shipSize)
+}
+
 func main() {
 	//Used to clear the console at the start of the game
 	fmt.Print("\033[H\033[2J")
