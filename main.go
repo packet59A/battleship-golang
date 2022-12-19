@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 //Global vars to be used througout the code
 var (
 	gameOver bool //used for checking before displaying options after a finished turn
@@ -28,6 +30,8 @@ type Position struct {
 }
 
 func main() {
+	//Used to clear the console at the start of the game
+	fmt.Print("\033[H\033[2J")
 
 	//loop until gameOver is true (finished game with a winner)
 
