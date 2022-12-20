@@ -78,11 +78,13 @@ func main() {
 
 		//loop until gameOver is true (finished game with a winner)
 
-		if !gameOver {
+		startGame(m.choice) //print the initial 10x10 board without any ships
 
-			startGame(m.choice) //print the initial 10x10 board without any ships
+		for !gameOver {
 			//player 1 turn
+			player1Turn()
 			//player 2 turn
+			//player2Shoot()
 		}
 
 		//game over print and show option to restart or exit

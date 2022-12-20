@@ -5,7 +5,7 @@ import (
 )
 
 // by not defaulting the variables to player1 we can reuse this function for player2 when placing ships
-func spawnShipCoordinates(playerBoard int, tempPlayerBoard [10][10]int, playerShips []Ship, boardCoords [2]int, direction string, index int) bool {
+func spawnShipCoordinates(pointerBoard *[10][10]int, playerShips []Ship, boardCoords [2]int, direction string, index int) bool {
 
 	//look at the direction and do different calculations accordingly
 	if direction == "V" {
@@ -20,14 +20,14 @@ func spawnShipCoordinates(playerBoard int, tempPlayerBoard [10][10]int, playerSh
 			check that the value for Y is not going over the board boundaries whilst taking account for the ship width of 1 unit as its vertically placed
 			check that the ship being placed will not overlap with any other ship by checking through each ship object
 		*/
-		if boardCoords[0] >= 0 && boardCoords[1] >= 0 && boardCoords[1] < len(tempPlayerBoard) && boardCoords[0]+boardShipSize[index] <= len(tempPlayerBoard) &&
+		if boardCoords[0] >= 0 && boardCoords[1] >= 0 && boardCoords[1] < len(pointerBoard) && boardCoords[0]+boardShipSize[index] <= len(pointerBoard) &&
 			shipOverlapCheck(boardCoords[0], boardCoords[1], boardShipSize[index], direction, playerShips) {
 
 			//create a new ship with the specified coordinates
 			playerShips[index].create(boardShipSize[index])
 			for i := 0; i < boardShipSize[index]; i++ {
 				//update the tempPlayerBoard values to indicate there is a ship (1 = ship, 0 = no ship)
-				tempPlayerBoard[boardCoords[0]+i][boardCoords[1]] = 1
+				pointerBoard[boardCoords[0]+i][boardCoords[1]] = 1
 
 				//add the coordinates of the ship to the newly created object
 				playerShips[index].addCoords(boardCoords[0]+i, boardCoords[1], i)
@@ -48,7 +48,7 @@ func spawnShipCoordinates(playerBoard int, tempPlayerBoard [10][10]int, playerSh
 			check that the value for X is not going over the board boundaries whilst taking account for the ship width of 1 unit as its vertically placed
 			check that the ship being placed will not overlap with any other ship by checking through each ship object
 		*/
-		if boardCoords[1] >= 0 && boardCoords[0] >= 0 && boardCoords[0] < len(tempPlayerBoard) && boardCoords[1]+boardShipSize[index] <= len(tempPlayerBoard) &&
+		if boardCoords[1] >= 0 && boardCoords[0] >= 0 && boardCoords[0] < len(pointerBoard) && boardCoords[1]+boardShipSize[index] <= len(pointerBoard) &&
 			shipOverlapCheck(boardCoords[0], boardCoords[1], boardShipSize[index], direction, playerShips) {
 
 			//create a new ship with the specified coordinates
@@ -56,7 +56,7 @@ func spawnShipCoordinates(playerBoard int, tempPlayerBoard [10][10]int, playerSh
 			for i := 0; i < boardShipSize[index]; i++ {
 
 				//update the tempPlayerBoard values to indicate there is a ship (1 = ship, 0 = no ship)
-				tempPlayerBoard[boardCoords[0]][boardCoords[1]+i] = 1
+				pointerBoard[boardCoords[0]][boardCoords[1]+i] = 1
 
 				//add the coordinates of the ship to the newly created object
 				playerShips[index].addCoords(boardCoords[0], boardCoords[1]+i, i)
@@ -65,13 +65,6 @@ func spawnShipCoordinates(playerBoard int, tempPlayerBoard [10][10]int, playerSh
 			//return false if its not possible to place a ship at the specified coordinates/direction
 			return false
 		}
-	}
-
-	//save the local variable tempPlayerBoard data to the actual board that will be printed in the console
-	if playerBoard == 1 {
-		player1Board = tempPlayerBoard
-	} else {
-		player2Board = tempPlayerBoard
 	}
 
 	return true
@@ -157,7 +150,7 @@ func transformCoordinates(str string) [2]int {
 
 func verifyCoordsFormat(xAxis, yAxis string) (string, bool) {
 
-	//get char1 rune
+	//get xaxis rune
 	for _, r := range xAxis {
 		//verifies if rune value is corresponding to "ABCDEFGHIJ"
 		if !(r > 64 && r < 75) {
@@ -165,7 +158,7 @@ func verifyCoordsFormat(xAxis, yAxis string) (string, bool) {
 		}
 	}
 
-	//get char2 rune
+	//get yaxis rune
 	for _, r := range yAxis {
 		//verifies if rune value is corresponding to "012345789"
 		if !(r > 47 && r < 58) {

@@ -28,9 +28,10 @@ func startGame(gamemode string) {
 	if gamemode == "1 VS BOT" {
 		//Player 2 (BOT) places their ships
 		shipPlacementBot()
-	} else {
+	} else if gamemode == "1 VS 1" {
 		//Player 2 (HUMAN) places their ships
 		//shipPlacementPlayer2()
+		shipPlacementBot()
 	}
 }
 
@@ -46,9 +47,9 @@ func shipPlacementBot() {
 			"H",
 			"V",
 		}[rand.Intn(2)]
-		boardCoords := transformCoordinates(generatedCoords()) //Transform the randomly generated coordinates to plottable coords
-		shipPlaced := spawnShipCoordinates(2, player2Board, player2Ships, boardCoords, direction, i)
-		//since the coordinates are randomly generated it could take few retries to get it to place them
+		boardCoords := transformCoordinates(generatedCoords())                                     //Transform the randomly generated coordinates to plottable coords
+		shipPlaced := spawnShipCoordinates(&player2Board, player2Ships, boardCoords, direction, i) //making use of pointers since its not a local variable and the value inside will be changed if a ship is placed
+		//since the coordinates are randomly generated the bot will automatically retry ship placement if it can't be placed
 		if shipPlaced {
 			i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
 		}
@@ -95,7 +96,7 @@ func shipPlacementPlayer1() {
 			if verified {
 				boardCoords := transformCoordinates(coordinates) //Transform the coordinates to plottable coords
 				fmt.Println("Coordinates1:", boardCoords)
-				shipPlaced := spawnShipCoordinates(1, player1Board, player1Ships, boardCoords, direction, i)
+				shipPlaced := spawnShipCoordinates(&player1Board, player1Ships, boardCoords, direction, i) //making use of pointers since its not a local variable and the value inside will be changed if a ship is placed
 				if shipPlaced {
 					i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
 					//fmt.Print("\033[H\033[2J") //clear console ahead of next ship placement
@@ -154,6 +155,23 @@ func playerBoard1() {
 				} else {
 					fmt.Print("S ")
 				}
+			} else if player1Board[x][y] == -1 {
+				//-1 means there is a ship there so print the ship marker
+				if y == 0 {
+					fmt.Print(" X ")
+				} else if y == 9 {
+					fmt.Print("X  ")
+				} else {
+					fmt.Print("X ")
+				}
+			} else {
+				if y == 0 {
+					fmt.Print(" - ")
+				} else if y == 9 {
+					fmt.Print("-  ")
+				} else {
+					fmt.Print("- ")
+				}
 			}
 		}
 		fmt.Println() //Go to a new line for each time a Y axis is finished printing
@@ -199,6 +217,23 @@ func playerBoard2() {
 					fmt.Print("S  ")
 				} else {
 					fmt.Print("S ")
+				}
+			} else if player2Board[x][y] == -1 {
+				//1 means there is a ship there so print the ship marker
+				if y == 0 {
+					fmt.Print(" X ")
+				} else if y == 9 {
+					fmt.Print("X  ")
+				} else {
+					fmt.Print("X ")
+				}
+			} else {
+				if y == 0 {
+					fmt.Print(" - ")
+				} else if y == 9 {
+					fmt.Print("-  ")
+				} else {
+					fmt.Print("- ")
 				}
 			}
 		}
