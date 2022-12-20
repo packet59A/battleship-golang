@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func printBoard() {
+func startGame(gamemode string) {
 	//make sure the values are initialized at 0 for each board
 
 	//loop over the 10 slices
@@ -22,11 +22,16 @@ func printBoard() {
 		}
 	}
 
-	//Player 1 places their ships
+	//Player (HUMAN) places their ships
 	shipPlacementPlayer1()
 
-	//Player 2 (BOT) places their ships
-	shipPlacementBot()
+	if gamemode == "1 VS BOT" {
+		//Player 2 (BOT) places their ships
+		shipPlacementBot()
+	} else {
+		//Player 2 (HUMAN) places their ships
+		//shipPlacementPlayer2()
+	}
 }
 
 func shipPlacementBot() {

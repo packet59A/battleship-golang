@@ -1,57 +1,90 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"strings"
 
-//Global vars to be used througout the code
-var (
-	gameOver bool //used for checking before displaying options after a finished turn
-
-	//board sizing (max x = 10 and max y = 10)
-	player1Board [10][10]int //contains the board of 10 slice (x) of 10 numbers each (y)
-	player2Board [10][10]int //contains the board of 10 slice (x) of 10 numbers each (y)
-
-	boardAxisY = [10]string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
-
-	boardShipSize = [5]int{2, 3, 3, 4, 5}                                                   //Ship sizes decided by the official game rules
-	boardShipName = [5]string{"Destroyer", "Submarine", "Cruiser", "Battleship", "Carrier"} //Ship names decided by the official game rules
-
-	player1Ships []Ship
-	player2Ships []Ship
+	tea "github.com/charmbracelet/bubbletea"
 )
 
-type Ship struct {
-	sunk     bool
-	size     int
-	position []Position
+func (m model) Init() tea.Cmd {
+	return nil
 }
 
-type Position struct {
-	x, y int
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c", "q", "esc":
+			return m, tea.Quit
+
+		case "enter":
+			// Send the choice on the channel and exit.
+			m.choice = choices[m.cursor]
+			return m, tea.Quit
+
+		case "j":
+			m.cursor++
+			if m.cursor >= len(choices) {
+				m.cursor = 0
+			}
+
+		case "k":
+			m.cursor--
+			if m.cursor < 0 {
+				m.cursor = len(choices) - 1
+			}
+		}
+	}
+
+	return m, nil
 }
 
-func (ship *Ship) addCoords(xPos, yPos, index int) {
-	//fmt.Println("xP", xP, "yP", yP, "index", index)
-	ship.position[index] = Position{x: xPos, y: yPos}
-}
+func (m model) View() string {
+	s := strings.Builder{}
+	s.WriteString("Battleship Golang by packet_sent\n\n")
 
-func (ship *Ship) create(shipSize int) {
-	ship.size = shipSize
-	ship.sunk = false
-	ship.position = make([]Position, shipSize)
+	s.WriteString("Please choose a gamemode:\n")
+	for i := 0; i < len(choices); i++ {
+		if m.cursor == i {
+			s.WriteString("(•) ")
+		} else {
+			s.WriteString("( ) ")
+		}
+		s.WriteString(choices[i])
+		s.WriteString("\n")
+	}
+	s.WriteString("\nup/down: j/k • select: enter • esc/ctrl+c: quit\n")
+
+	return s.String()
 }
 
 func main() {
-	//Used to clear the console at the start of the game
-	fmt.Print("\033[H\033[2J")
+	p := tea.NewProgram(model{})
 
-	//loop until gameOver is true (finished game with a winner)
-
-	if !gameOver {
-
-		printBoard() //print the initial 10x10 board without any ships
-		//player 1 turn
-		//player 2 turn
+	// Run returns the model as a tea.Model.
+	m, err := p.Run()
+	if err != nil {
+		fmt.Println("Oh no:", err)
+		os.Exit(1)
 	}
 
-	//game over print and show option to restart or exit
+	// Assert the final tea.Model to our local model and print the choice.
+	if m, ok := m.(model); ok && m.choice != "" {
+		fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
+		fmt.Print("Battleship Golang by packet_sent\n\n")
+		fmt.Printf("Starting %s Gamemode\n", m.choice)
+
+		//loop until gameOver is true (finished game with a winner)
+
+		if !gameOver {
+
+			startGame(m.choice) //print the initial 10x10 board without any ships
+			//player 1 turn
+			//player 2 turn
+		}
+
+		//game over print and show option to restart or exit
+	}
 }
