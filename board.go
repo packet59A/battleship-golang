@@ -3,9 +3,11 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func printBoard() {
@@ -23,8 +25,41 @@ func printBoard() {
 	//Player 1 places their ships
 	shipPlacementPlayer1()
 
-	//Player 2 places their ships
-	//shipPlacementPlayer2()
+	//Player 2 (BOT) places their ships
+	shipPlacementBot()
+}
+
+func shipPlacementBot() {
+
+	//Store the various ship data for player 2
+	player2Ships = make([]Ship, len(boardShipSize))
+
+	//iterate over the number of ships (should run 5 times since there are 5 ships only)
+	for i := 0; i < len(boardShipSize); {
+		rand.Seed(time.Now().UnixNano()) //Generate time based seed
+		direction := []string{           //Create a string slice and randomly choose a value from within the slice
+			"H",
+			"V",
+		}[rand.Intn(2)]
+		boardCoords := transformCoordinates(generatedCoords()) //Transform the randomly generated coordinates to plottable coords
+		shipPlaced := spawnShipCoordinates(2, player2Board, player2Ships, boardCoords, direction, i)
+		//since the coordinates are randomly generated it could take few retries to get it to place them
+		if shipPlaced {
+			i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
+		}
+
+	}
+
+	fmt.Println("Enemy ships placed")
+	playerBoard2()
+}
+
+func generatedCoords() string {
+	rand.Seed(time.Now().UnixNano())                     //Generate time based seed
+	randomCharacter := string('A' + rune(rand.Intn(10))) //Generate random character from A-J
+	randomNumber := strconv.Itoa(rand.Intn(10))          //Generate random character from 0-10
+
+	return (randomCharacter + randomNumber)
 }
 
 func shipPlacementPlayer1() {
@@ -53,8 +88,8 @@ func shipPlacementPlayer1() {
 			//Only grab the 1st 2 chars of the coordinates and verify they are formatted correctly
 			coordinates, verified := verifyCoordsFormat(coordinates[0:1], coordinates[1:2])
 			if verified {
-				fmt.Println("Coordinates:", coordinates)
-				boardCoords := transformCoordinates(coordinates)
+				boardCoords := transformCoordinates(coordinates) //Transform the coordinates to plottable coords
+				fmt.Println("Coordinates1:", boardCoords)
 				shipPlaced := spawnShipCoordinates(1, player1Board, player1Ships, boardCoords, direction, i)
 				if shipPlaced {
 					i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
@@ -106,6 +141,52 @@ func playerBoard1() {
 					fmt.Print("0 ")
 				}
 			} else if player1Board[x][y] == 1 {
+				//1 means there is a ship there so print the ship marker
+				if y == 0 {
+					fmt.Print(" S ")
+				} else if y == 9 {
+					fmt.Print("S  ")
+				} else {
+					fmt.Print("S ")
+				}
+			}
+		}
+		fmt.Println() //Go to a new line for each time a Y axis is finished printing
+	}
+}
+
+func playerBoard2() {
+	fmt.Print("\n\n")
+	fmt.Print("Player 2 Board:\n")
+
+	//iterate the X axis and only grab the key to use as the position/number
+	for y := range boardAxisY {
+		if y == 0 {
+			//have double spaces at the first iteration for cleaner looking printing
+			fmt.Printf("  %d ", y)
+		} else {
+			//else print without the double spaces as its not needed after the first iteration
+			fmt.Printf("%d ", y)
+		}
+	}
+	fmt.Println() //Go to a new line
+
+	//iterate over the Y axis and use the key to get the value to print position/letter
+	for x := range player2Board {
+		//use the key to as the letter position and print it
+		fmt.Print(boardAxisY[x])
+		//iterate over Y axis slice regardless of its value being 0 or 1
+		for y := 0; y <= (len(player2Board[x]) - 1); y++ {
+			if player2Board[x][y] == 0 {
+				//0 means there is a no ship there so print the empty marker
+				if y == 0 {
+					fmt.Print(" 0 ")
+				} else if y == 9 {
+					fmt.Print("0  ")
+				} else {
+					fmt.Print("0 ")
+				}
+			} else if player2Board[x][y] == 1 {
 				//1 means there is a ship there so print the ship marker
 				if y == 0 {
 					fmt.Print(" S ")

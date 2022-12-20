@@ -26,7 +26,6 @@ func spawnShipCoordinates(playerBoard int, tempPlayerBoard [10][10]int, playerSh
 			//create a new ship with the specified coordinates
 			playerShips[index].create(boardShipSize[index])
 			for i := 0; i < boardShipSize[index]; i++ {
-
 				//update the tempPlayerBoard values to indicate there is a ship (1 = ship, 0 = no ship)
 				tempPlayerBoard[boardCoords[0]+i][boardCoords[1]] = 1
 
