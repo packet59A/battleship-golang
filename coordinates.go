@@ -24,7 +24,7 @@ func spawnShipCoordinates(pointerBoard *[10][10]int, playerShips []Ship, boardCo
 			shipOverlapCheck(boardCoords[0], boardCoords[1], boardShipSize[index], direction, playerShips) {
 
 			//create a new ship with the specified coordinates
-			playerShips[index].create(boardShipSize[index])
+			playerShips[index].create(boardShipSize[index], index)
 			for i := 0; i < boardShipSize[index]; i++ {
 				//update the tempPlayerBoard values to indicate there is a ship (1 = ship, 0 = no ship)
 				pointerBoard[boardCoords[0]+i][boardCoords[1]] = 1
@@ -52,7 +52,7 @@ func spawnShipCoordinates(pointerBoard *[10][10]int, playerShips []Ship, boardCo
 			shipOverlapCheck(boardCoords[0], boardCoords[1], boardShipSize[index], direction, playerShips) {
 
 			//create a new ship with the specified coordinates
-			playerShips[index].create(boardShipSize[index])
+			playerShips[index].create(boardShipSize[index], index)
 			for i := 0; i < boardShipSize[index]; i++ {
 
 				//update the tempPlayerBoard values to indicate there is a ship (1 = ship, 0 = no ship)
