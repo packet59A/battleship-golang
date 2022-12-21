@@ -1,7 +1,9 @@
 package main
 
 import (
+	"math/rand"
 	"strconv"
+	"time"
 )
 
 // by not defaulting the variables to player1 we can reuse this function for player2 when placing ships
@@ -111,6 +113,14 @@ func shipOverlapCheck(x, y, size int, direction string, ships []Ship) bool {
 		}
 	}
 	return true
+}
+
+func generatedCoords() string {
+	rand.Seed(time.Now().UnixNano())                     //Generate time based seed
+	randomCharacter := string('A' + rune(rand.Intn(10))) //Generate random character from A-J
+	randomNumber := strconv.Itoa(rand.Intn(10))          //Generate random character from 0-10
+
+	return (randomCharacter + randomNumber)
 }
 
 func transformCoordinates(str string) [2]int {

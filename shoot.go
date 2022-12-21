@@ -10,13 +10,12 @@ import (
 )
 
 func player1Turn() {
-	//Show turn starting board
-	//fmt.Print("\033[H\033[2J")
+	fmt.Print("\033[H\033[2J") //clear console
 	fmt.Println("You need to destroy all the enemy ships first to win!")
 	fmt.Printf("[P1] Turn %d Starting \n", turn)
 
-	playerBoard1()
-	playerBoard2(false) //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
+	playerBoard1(false) //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
+	playerBoard2(true)  //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
 	fmt.Print("\n")
 
 	//keep looping until a valid coordinate has been shot at
@@ -58,13 +57,12 @@ func player1Turn() {
 	//Show turn ending board
 	//fmt.Print("\033[H\033[2J")
 	fmt.Printf("[P1] Turn %d Ending\n", turn)
-	//if true is sent then don't show the ship and only show shot areas with X and missed areas with -
-	playerBoard2(false)
+	playerBoard2(true)          //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
+	time.Sleep(time.Second * 2) //delay before finishing the function so the user can read the updated board
 }
 
 func player2Turn() {
-	//fmt.Print("\033[H\033[2J")
-	fmt.Print("\n")
+	fmt.Print("\033[H\033[2J") //clear console
 	if gamemode == "1 VS BOT" {
 		//fmt.Printf("[P2 BOT] Turn %d Ending\n", turn)
 		//Player 2 (BOT) shoots the ships
@@ -86,9 +84,56 @@ func player2Turn() {
 		//fmt.Print("\033[H\033[2J")
 	} else if gamemode == "1 VS 1" {
 		//Player 2 (HUMAN) shoots their ships
-		fmt.Println("You need to destroy all the enemy ships first to win!")
-		fmt.Printf("[P2] Turn %d Starting\n", turn)
+
+		//fmt.Print("\033[H\033[2J")
+		fmt.Println("[P2] You need to destroy all the enemy ships first to win!")
+		fmt.Printf("[P2] Turn %d Starting \n", turn)
+
+		playerBoard2(false) //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
+		playerBoard1(true)  //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
+		fmt.Print("\n")
+
+		//keep looping until a valid coordinate has been shot at
+		for {
+			//Create a reader with a default size buffer to temporarily store any text input data
+			readerBuffer := bufio.NewReader(os.Stdin)
+			fmt.Print("[P2] Enter coordinates to shoot: ")
+			coordinates, _ := readerBuffer.ReadString('\n')
+			coordinates = strings.ToUpper(strings.TrimSpace(coordinates)) //remove whitespace and tabspace from the string that was just read and make everything uppercase
+			if len(coordinates) < 2 {                                     //Checking for the minimum required length before using the value as 2 slices
+				fmt.Println("\n[P2] Wrong input for shooting coordinates")
+				continue //start the loop from the top again
+			}
+			//Only grab the 1st 2 chars of the coordinates and verify they are formatted correctly
+			coordinates, verified := verifyCoordsFormat(coordinates[0:1], coordinates[1:2])
+			if verified {
+				boardCoords := transformCoordinates(coordinates) //Transform the coordinates to plottable coords
+
+				/*
+					HITSCAN function explained:
+					check if the shoooting coordinates are within the board limits
+					check if the coordinates have been shot at already
+
+					if any of those conditions are false then repeat the turn until a valid
+					coordinate  has been shot regardless of there being a ship or not
+				*/
+				if shipHitscan(&player1Board, player1Ships, Position{x: boardCoords[0], y: boardCoords[1]}, false) {
+					//time.Sleep(time.Millisecond * 1200) //wait for 1.2s before moving on so the message from the hitscan can be read
+					break //start the loop from the top again
+				} else {
+					continue
+				}
+			} else {
+				fmt.Println("\n[P2] Wrong input for shooting coordinates")
+				continue //start the loop from the top again
+			}
+		}
+
+		//Show turn ending board
+		//fmt.Print("\033[H\033[2J")
 		fmt.Printf("[P2] Turn %d Ending\n", turn)
+		playerBoard2(true)          //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
+		time.Sleep(time.Second * 2) //delay before finishing the function so the user can read the updated board
 	}
 
 	//Show turn ending board
@@ -159,7 +204,7 @@ func winnerCheck() {
 			}
 		}
 		if playerWon {
-			chanPlayer <- "Player 1" //sends the value via the string channel
+			chanPlayer <- "Player 1 (HUMAN)" //sends the value via the string channel
 		} else {
 			chanPlayer <- "" //sends the value via the string channel
 		}
@@ -177,7 +222,7 @@ func winnerCheck() {
 		}
 
 		if playerWon && gamemode == "1 VS 1" {
-			chanPlayer <- "Player 2" //sends the value via the string channel
+			chanPlayer <- "Player 2 (HUMAN)" //sends the value via the string channel
 		} else if playerWon && gamemode == "1 VS BOT" {
 			chanPlayer <- "Player 2 (BOT)" //sends the value via the string channel
 		} else {

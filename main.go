@@ -30,24 +30,21 @@ func main() {
 
 		startGame() //start the game by placing the ships on the board
 
-		fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
 		fmt.Println("Ships have been placed on both boards")
 
 		//loop until gameOver is true
 
 		for !gameOver {
-
-			//player 1 turn
-			player1Turn()
+			player1Turn() //player 1 turn
+			turnSwitch(1) //this only runs if its a 1v1 to not allow any advantage to the previous player
 
 			if gameOver {
 				break
 			}
-			//player 2 turn
-			player2Turn()
 
-			turn++                     //increment the turn counter
-			fmt.Print("\033[H\033[2J") //clear console after each turn has finished
+			player2Turn() //player 2 turn
+			turnSwitch(2) //this only runs if its a 1v1 to not allow any advantage to the previous player
+			turn++        //increment the turn counter
 		}
 
 		fmt.Printf("\n\nCongratulations %s for winning the game!\n\n", playerWon)
