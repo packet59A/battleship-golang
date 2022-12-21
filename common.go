@@ -8,15 +8,18 @@ var (
 	player1Board [10][10]int //contains the board of 10 slice (x) of 10 numbers each (y)
 	player2Board [10][10]int //contains the board of 10 slice (x) of 10 numbers each (y)
 
-	boardAxisY = [10]string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
+	boardAxisY = [10]string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"} //Y Axis label for the board
 
 	boardShipSize = [5]int{2, 3, 3, 4, 5}                                                   //Ship sizes decided by the official game rules
 	boardShipName = [5]string{"Destroyer", "Submarine", "Cruiser", "Battleship", "Carrier"} //Ship names decided by the official game rules
 
-	player1Ships []Ship
-	player2Ships []Ship
+	player1Ships []Ship //used for holding the player's ship data
+	player2Ships []Ship //used for holding the player's ship data
 
-	choices = []string{"1 VS BOT", "1 VS 1"}
+	turn = 1 //start the game at turn 1
+
+	choices  = []string{"1 VS BOT", "1 VS 1"} //current gamemode options to show in the menu
+	gamemode string                           //holds the user chosen gamemode and will be used for when deciding what functions to run
 )
 
 type Ship struct {
@@ -40,7 +43,7 @@ func (ship *Ship) addCoords(xPos, yPos, index int) {
 	ship.position[index] = Position{x: xPos, y: yPos}
 }
 
-func (ship *Ship) create(shipSize int, index int) {
+func (ship *Ship) create(shipSize, index int) {
 	ship.size = shipSize
 	ship.sunk = false
 	ship.name = boardShipName[index]

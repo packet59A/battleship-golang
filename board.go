@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func startGame(gamemode string) {
+func startGame() {
 	//make sure the values are initialized at 0 for each board
 
 	//loop over the 10 slices
@@ -36,7 +36,7 @@ func startGame(gamemode string) {
 }
 
 func shipPlacementBot() {
-	fmt.Print("\033[H\033[2J")
+	//fmt.Print("\033[H\033[2J")
 	//Store the various ship data for player 2
 	player2Ships = make([]Ship, len(boardShipSize))
 
@@ -55,10 +55,6 @@ func shipPlacementBot() {
 		}
 
 	}
-
-	fmt.Println("Enemy ships placed")
-	//if true is sent then don't show the ship and only show shot areas with X and missed areas with -
-	playerBoard2(true)
 }
 
 func generatedCoords() string {
@@ -71,6 +67,8 @@ func generatedCoords() string {
 
 func shipPlacementPlayer1() {
 	//Show the starting board
+	fmt.Printf("Please place your %d ships on the board\n", len(boardShipSize))
+	fmt.Printf("Ships left to be placed: %d\n", len(boardShipSize))
 	playerBoard1()
 
 	//Store the various ship data for player 1
@@ -91,32 +89,39 @@ func shipPlacementPlayer1() {
 			fmt.Print("Ship Coordinates: ")
 			coordinates, _ := readerBuffer.ReadString('\n')
 			coordinates = strings.ToUpper(strings.TrimSpace(coordinates)) //remove whitespace and tabspace from the string that was just read and make everything uppercase
-
+			if len(coordinates) < 2 {                                     //Checking for the minimum required length before using the value as 2 slices
+				fmt.Println("\nWrong input for ship coordinates")
+				continue //start the loop from the top again
+			}
 			//Only grab the 1st 2 chars of the coordinates and verify they are formatted correctly
 			coordinates, verified := verifyCoordsFormat(coordinates[0:1], coordinates[1:2])
 			if verified {
 				boardCoords := transformCoordinates(coordinates)                                           //Transform the coordinates to plottable coords
 				shipPlaced := spawnShipCoordinates(&player1Board, player1Ships, boardCoords, direction, i) //making use of pointers since its not a local variable and the value inside will be changed if a ship is placed
 				if shipPlaced {
-					i++                        //increase the counter for the loop so it stops after all ships have been placed successfully on the board
-					fmt.Print("\033[H\033[2J") //clear console ahead of next ship placement
-					playerBoard1()             //print updated playerboard
+					i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
+					//fmt.Print("\033[H\033[2J") //clear console ahead of next ship placement
+					fmt.Print("\033[H\033[2J")
+					fmt.Printf("Please place your %d ships on the board\n", len(boardShipSize))
+					fmt.Printf("Ships left to be placed: %d\n", len(boardShipSize)-i) //show how many ships left to be placed (-1 each iteration)
+
+					playerBoard1() //print updated playerboard
 				} else {
-					fmt.Println("Unable to place ship at these coordinates")
+					fmt.Println("\nUnable to place ship at these coordinates")
 				}
 			} else {
-				fmt.Println("Wrong input for ship coordinates")
+				fmt.Println("\nWrong input for ship coordinates")
 			}
 
 		} else {
 			//if input is wrong then keep looping over until we get the correct direction and print the wrong direction message
-			fmt.Println("Wrong input for ship direction")
+			fmt.Println("\nWrong input for ship direction")
 		}
 	}
 }
 
 func playerBoard1() {
-	fmt.Print("\n\n")
+	fmt.Print("\n")
 	fmt.Print("Player 1 Board:\n")
 
 	//iterate the X axis and only grab the key to use as the position/number
@@ -178,9 +183,9 @@ func playerBoard1() {
 	}
 }
 
-func playerBoard2(bot bool) {
-	fmt.Print("\n\n")
-	fmt.Print("Player 2 Board:\n")
+func playerBoard2(hide bool) {
+	fmt.Print("\n")
+	fmt.Print("Player 2 (BOT) Board:\n")
 
 	//iterate the X axis and only grab the key to use as the position/number
 	for y := range boardAxisY {
@@ -200,7 +205,7 @@ func playerBoard2(bot bool) {
 		fmt.Print(boardAxisY[x])
 		//iterate over Y axis slice regardless of its value being 0 or 1
 		for y := 0; y <= (len(player2Board[x]) - 1); y++ {
-			if player2Board[x][y] == 0 && !bot {
+			if player2Board[x][y] == 0 && !hide {
 				//0 means there is a no ship there so print the empty marker
 				if y == 0 {
 					fmt.Print(" 0 ")
@@ -209,7 +214,7 @@ func playerBoard2(bot bool) {
 				} else {
 					fmt.Print("0 ")
 				}
-			} else if player2Board[x][y] == 1 && !bot {
+			} else if player2Board[x][y] == 1 && !hide {
 				//1 means there is a ship there so print the ship marker
 				if y == 0 {
 					fmt.Print(" S ")
@@ -218,7 +223,7 @@ func playerBoard2(bot bool) {
 				} else {
 					fmt.Print("S ")
 				}
-			} else if (player2Board[x][y] == 0 || player2Board[x][y] == 1) && bot {
+			} else if (player2Board[x][y] == 0 || player2Board[x][y] == 1) && hide {
 				//0 means there is a no ship there so print the empty marker
 				if y == 0 {
 					fmt.Print(" 0 ")

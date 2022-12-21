@@ -72,19 +72,24 @@ func main() {
 
 	// Assert the final tea.Model to our local model and print the choice.
 	if m, ok := m.(model); ok && m.choice != "" {
+		gamemode = m.choice        //assign the value of the choice to the global variable
 		fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
-		fmt.Print("Battleship Golang by packet_sent\n\n")
-		fmt.Printf("Starting %s Gamemode\n", m.choice)
+		fmt.Printf("Gamemode Selected: %s\n", gamemode)
+
+		startGame() //print the initial 10x10 board without any ships
+		fmt.Print("\033[H\033[2J")
+		fmt.Println("Ships have been placed on both boards")
 
 		//loop until gameOver is true (finished game with a winner)
-
-		startGame(m.choice) //print the initial 10x10 board without any ships
-
 		for !gameOver {
+
 			//player 1 turn
 			player1Turn()
 			//player 2 turn
-			//player2Shoot()
+			player2Turn()
+
+			turn++                     //increment the turn counter
+			fmt.Print("\033[H\033[2J") //clear console after each turn has finished
 		}
 
 		//game over print and show option to restart or exit
