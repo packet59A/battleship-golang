@@ -38,7 +38,6 @@ func startGame() {
 }
 
 func shipPlacementBot() {
-	//fmt.Print("\033[H\033[2J")
 	//Store the various ship data for player 2
 	player2Ships = make([]Ship, len(boardShipSize))
 
@@ -151,7 +150,6 @@ func shipPlacementPlayer2() {
 				shipPlaced := spawnShipCoordinates(&player2Board, player2Ships, boardCoords, direction, i) //making use of pointers since its not a local variable and the value inside will be changed if a ship is placed
 				if shipPlaced {
 					i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
-					//fmt.Print("\033[H\033[2J") //clear console ahead of next ship placement
 					fmt.Print("\033[H\033[2J")
 					fmt.Printf("[P2] Please place your %d ships on the board\n", len(boardShipSize))
 					fmt.Printf("[P2] Ships left to be placed: %d\n", len(boardShipSize)-i) //show how many ships left to be placed (-1 each iteration)

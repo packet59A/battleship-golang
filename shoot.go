@@ -55,7 +55,6 @@ func player1Turn() {
 	}
 
 	//Show turn ending board
-	//fmt.Print("\033[H\033[2J")
 	fmt.Printf("[P1] Turn %d Ending\n", turn)
 	playerBoard2(true)          //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
 	time.Sleep(time.Second * 2) //delay before finishing the function so the user can read the updated board
@@ -64,7 +63,6 @@ func player1Turn() {
 func player2Turn() {
 	fmt.Print("\033[H\033[2J") //clear console
 	if gamemode == "1 VS BOT" {
-		//fmt.Printf("[P2 BOT] Turn %d Ending\n", turn)
 		//Player 2 (BOT) shoots the ships
 
 		//keep looping until a valid coordinate has been shot at
@@ -80,12 +78,9 @@ func player2Turn() {
 				break //get out of the for loop
 			}
 		}
-		//fmt.Printf("[P2 BOT] Turn %d Ending\n", turn)
-		//fmt.Print("\033[H\033[2J")
 	} else if gamemode == "1 VS 1" {
 		//Player 2 (HUMAN) shoots their ships
 
-		//fmt.Print("\033[H\033[2J")
 		fmt.Println("[P2] You need to destroy all the enemy ships first to win!")
 		fmt.Printf("[P2] Turn %d Starting \n", turn)
 
@@ -130,14 +125,11 @@ func player2Turn() {
 		}
 
 		//Show turn ending board
-		//fmt.Print("\033[H\033[2J")
 		fmt.Printf("[P2] Turn %d Ending\n", turn)
 		playerBoard2(true)          //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
 		time.Sleep(time.Second * 2) //delay before finishing the function so the user can read the updated board
 	}
 
-	//Show turn ending board
-	//fmt.Print("\033[H\033[2J")
 }
 
 // The hide bool in the hitscan function is used for when using a bot to hide the outputs
