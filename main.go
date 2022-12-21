@@ -3,64 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func (m model) Init() tea.Cmd {
-	return nil
-}
-
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q", "esc":
-			return m, tea.Quit
-
-		case "enter":
-			// Send the choice on the channel and exit.
-			m.choice = choices[m.cursor]
-			return m, tea.Quit
-
-		case "j":
-			m.cursor++
-			if m.cursor >= len(choices) {
-				m.cursor = 0
-			}
-
-		case "k":
-			m.cursor--
-			if m.cursor < 0 {
-				m.cursor = len(choices) - 1
-			}
-		}
-	}
-
-	return m, nil
-}
-
-func (m model) View() string {
-	s := strings.Builder{}
-	s.WriteString("Battleship Golang by packet_sent\n\n")
-
-	s.WriteString("Please choose a gamemode:\n")
-	for i := 0; i < len(choices); i++ {
-		if m.cursor == i {
-			s.WriteString("(•) ")
-		} else {
-			s.WriteString("( ) ")
-		}
-		s.WriteString(choices[i])
-		s.WriteString("\n")
-	}
-	s.WriteString("\nup/down: j/k • select: enter • esc/ctrl+c: quit\n")
-
-	return s.String()
-}
-
 func main() {
+	fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
 	p := tea.NewProgram(model{})
 
 	// Run returns the model as a tea.Model.
@@ -72,7 +20,8 @@ func main() {
 
 	// Assert the final tea.Model to our local model and print the choice.
 	if m, ok := m.(model); ok && m.choice != "" {
-		gamemode = m.choice        //assign the value of the choice to the global variable
+		gamemode = m.choice //assign the value of the choice to the global variable
+		gameOver = false
 		fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
 		fmt.Printf("Gamemode Selected: %s\n", gamemode)
 
@@ -80,11 +29,16 @@ func main() {
 		fmt.Print("\033[H\033[2J")
 		fmt.Println("Ships have been placed on both boards")
 
-		//loop until gameOver is true (finished game with a winner)
+		//loop until gameOver is true
+
 		for !gameOver {
 
 			//player 1 turn
 			player1Turn()
+
+			if gameOver {
+				break
+			}
 			//player 2 turn
 			player2Turn()
 
@@ -92,6 +46,26 @@ func main() {
 			fmt.Print("\033[H\033[2J") //clear console after each turn has finished
 		}
 
+		fmt.Printf("Congratulations %s for winning the game!\n", playerWon)
 		//game over print and show option to restart or exit
+	}
+
+	p2 := tea.NewProgram(model{})
+	// Run returns the model as a tea.Model.
+	m2, err := p2.Run()
+	if err != nil {
+		fmt.Println("Oh no2:", err)
+		os.Exit(1)
+	}
+
+	if m2, ok := m2.(model); ok && m2.choice != "" {
+		//fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
+		if m2.choice == "Restart" {
+			main()
+		} else {
+			fmt.Println("Quit Program")
+			os.Exit(0)
+		}
+
 	}
 }

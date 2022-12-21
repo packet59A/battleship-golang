@@ -2,7 +2,7 @@ package main
 
 // Global vars to be used througout the code
 var (
-	gameOver bool //used for checking before displaying options after a finished turn
+	gameOver = false //used for checking before displaying options after a finished turn
 
 	//board sizing (max x = 10 and max y = 10)
 	player1Board [10][10]int //contains the board of 10 slice (x) of 10 numbers each (y)
@@ -18,8 +18,10 @@ var (
 
 	turn = 1 //start the game at turn 1
 
-	choices  = []string{"1 VS BOT", "1 VS 1"} //current gamemode options to show in the menu
-	gamemode string                           //holds the user chosen gamemode and will be used for when deciding what functions to run
+	gameChoices = []string{"1 VS BOT", "1 VS 1"}          //current gamemode options to show in the menu
+	menuChoices = []string{"Restart", "View Leaderboard"} //current gamemode options to show in the menu
+	gamemode    string                                    //holds the user chosen gamemode and will be used for when deciding what functions to run
+	playerWon   string                                    //holds who won the current game
 )
 
 type Ship struct {

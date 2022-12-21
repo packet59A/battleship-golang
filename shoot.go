@@ -16,7 +16,7 @@ func player1Turn() {
 	fmt.Printf("[P1] Turn %d Starting \n", turn)
 
 	playerBoard1()
-	playerBoard2(true) //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
+	playerBoard2(false) //if true is sent then don't show the ship and only show shot areas with X and missed areas with -
 	fmt.Print("\n")
 
 	//keep looping until a valid coordinate has been shot at
@@ -44,8 +44,8 @@ func player1Turn() {
 				coordinate  has been shot regardless of there being a ship or not
 			*/
 			if shipHitscan(&player2Board, player2Ships, Position{x: boardCoords[0], y: boardCoords[1]}, false) {
-				time.Sleep(time.Millisecond * 1200) //wait for 1.2s before moving on so the message from the hitscan can be read
-				break                               //start the loop from the top again
+				//time.Sleep(time.Millisecond * 1200) //wait for 1.2s before moving on so the message from the hitscan can be read
+				break //start the loop from the top again
 			} else {
 				continue
 			}
@@ -59,7 +59,7 @@ func player1Turn() {
 	//fmt.Print("\033[H\033[2J")
 	fmt.Printf("[P1] Turn %d Ending\n", turn)
 	//if true is sent then don't show the ship and only show shot areas with X and missed areas with -
-	playerBoard2(true)
+	playerBoard2(false)
 }
 
 func player2Turn() {
@@ -128,6 +128,7 @@ func shipHitscan(pointerBoard *[10][10]int, ships []Ship, pos Position, hide boo
 				//check if we have shot all the other existing coordinates
 				if ships[s].allShot() {
 					ships[s].sunk = true //change the object bool to sunk if all the whole ship was shot
+					winnerCheck()
 					if !hide {
 						fmt.Printf("Well done! %s ship of size %d just sunk!\n", ships[s].name, ships[s].size) //print that the player has shot all the occupied ship coordinates
 					}
@@ -142,4 +143,52 @@ func shipHitscan(pointerBoard *[10][10]int, ships []Ship, pos Position, hide boo
 		fmt.Println("Shot at nothing!")
 	}
 	return true
+}
+
+func winnerCheck() {
+	chanPlayer := make(chan string) //create once channel since there can be only one winner per game
+
+	//using goroutines to check who won simultaneously and this won't be an issue as there can only be one winner per game
+	go func() {
+		playerWon := true
+
+		//if the enemy ships have all been shot then this should return false and not send anything to chan bool
+		for s := range player2Ships {
+			if !player2Ships[s].sunk {
+				playerWon = false
+			}
+		}
+		if playerWon {
+			chanPlayer <- "Player 1" //sends the value via the string channel
+		} else {
+			chanPlayer <- "" //sends the value via the string channel
+		}
+	}()
+
+	//using goroutines to check who won simultaneously and this won't be an issue as there can only be one winner per game
+	go func() {
+		playerWon := true
+
+		///if the enemy ships have all been shot then this should return false and not send anything to chan bool
+		for s := range player1Ships {
+			if !player1Ships[s].sunk {
+				playerWon = false
+			}
+		}
+
+		if playerWon && gamemode == "1 VS 1" {
+			chanPlayer <- "Player 2" //sends the value via the string channel
+		} else if playerWon && gamemode == "1 VS BOT" {
+			chanPlayer <- "Player 2 (BOT)" //sends the value via the string channel
+		} else {
+			chanPlayer <- "" //sends the value via the string channel
+		}
+	}()
+
+	playerWon = <-chanPlayer //wait for any of the goroutine to finish 1st before moving down the code
+
+	//if a player won then announce it
+	if playerWon != "" {
+		gameOver = true
+	}
 }
