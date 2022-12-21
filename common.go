@@ -48,7 +48,6 @@ type model struct {
 }
 
 func (ship *Ship) addCoords(xPos, yPos, index int) {
-	//fmt.Println("xP", xP, "yP", yP, "index", index)
 	ship.position[index] = Position{x: xPos, y: yPos}
 }
 

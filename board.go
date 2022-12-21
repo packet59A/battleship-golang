@@ -94,7 +94,6 @@ func shipPlacementPlayer1() {
 				shipPlaced := spawnShipCoordinates(&player1Board, player1Ships, boardCoords, direction, i) //making use of pointers since its not a local variable and the value inside will be changed if a ship is placed
 				if shipPlaced {
 					i++ //increase the counter for the loop so it stops after all ships have been placed successfully on the board
-					//fmt.Print("\033[H\033[2J") //clear console ahead of next ship placement
 					fmt.Print("\033[H\033[2J")
 					fmt.Printf("[P1] Please place your %d ships on the board\n", len(boardShipSize))
 					fmt.Printf("[P1] Ships left to be placed: %d\n", len(boardShipSize)-i) //show how many ships left to be placed (-1 each iteration)
