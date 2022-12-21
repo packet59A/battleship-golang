@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"runtime"
+	"syscall"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -14,7 +17,7 @@ func main() {
 	// Run returns the model as a tea.Model.
 	m, err := p.Run()
 	if err != nil {
-		fmt.Println("Oh no:", err)
+		fmt.Println("Cause of Crash:", err)
 		os.Exit(1)
 	}
 
@@ -25,7 +28,7 @@ func main() {
 		fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
 		fmt.Printf("Gamemode Selected: %s\n", gamemode)
 
-		startGame() //print the initial 10x10 board without any ships
+		//startGame() //print the initial 10x10 board without any ships
 		fmt.Print("\033[H\033[2J")
 		fmt.Println("Ships have been placed on both boards")
 
@@ -54,14 +57,20 @@ func main() {
 	// Run returns the model as a tea.Model.
 	m2, err := p2.Run()
 	if err != nil {
-		fmt.Println("Oh no2:", err)
+		fmt.Println("Cause of Crash:", err)
 		os.Exit(1)
 	}
 
 	if m2, ok := m2.(model); ok && m2.choice != "" {
-		//fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
+		fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
 		if m2.choice == "Restart" {
-			main()
+
+			//we could also restart by calling main() again but here we are showcasing a different way to restart the simple game
+			err = restartUniversal()
+			if err != nil {
+				fmt.Println("Cause of Crash:", err)
+				os.Exit(0)
+			}
 		} else {
 			fmt.Println("Quit Program")
 			os.Exit(0)
@@ -69,3 +78,48 @@ func main() {
 
 	}
 }
+
+/* works on ubuntu and windows 10*/
+func restartUniversal() error {
+	self, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	args := os.Args
+	env := os.Environ()
+	// Windows does not support exec syscall.
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command(self, args[1:]...)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Stdin = os.Stdin
+		cmd.Env = env
+		err := cmd.Run()
+		if err == nil {
+			os.Exit(0)
+		}
+		return err
+	}
+	return syscall.Exec(self, args, env)
+}
+
+/* only works on windows 10
+func restart() error {
+	path, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	args := os.Args
+	env := os.Environ()
+	cmd := exec.Command(path, args[1:]...)
+	cmd.Env = env
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err = cmd.Run()
+	if err == nil {
+		os.Exit(0)
+	}
+	return err
+}
+*/
