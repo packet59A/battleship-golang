@@ -1,5 +1,7 @@
 package main
 
+import color "github.com/gookit/color"
+
 // Global vars to be used througout the code
 var (
 	gameOver = false //used for checking before displaying options after a finished turn
@@ -22,6 +24,11 @@ var (
 	menuChoices = []string{"Restart", "Quit"}    //current gamemode options to show in the menu
 	gamemode    string                           //holds the user chosen gamemode and will be used for when deciding what functions to run
 	playerWon   string                           //holds who won the current game
+
+	waterColor    = color.New(color.FgBlack, color.BgLightCyan.Darken()) //water color for outputs
+	shipColor     = color.New(color.FgRed.Light(), color.OpBold)         //ship color for outputs
+	shipShotColor = color.New(color.FgYellow.Light(), color.OpBold)      //shot ship color for outputs
+	boardColor    = color.New(color.FgWhite, color.BgGray)               //board axis color for outputs
 )
 
 type Ship struct {

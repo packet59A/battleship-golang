@@ -178,11 +178,10 @@ func playerBoard1(hide bool) {
 	//iterate the X axis and only grab the key to use as the position/number
 	for y := range boardAxisY {
 		if y == 0 {
-			//have double spaces at the first iteration for cleaner looking printing
-			fmt.Printf("  %d ", y)
+			boardColor.Printf("    %d ", y) //have double spaces at the first iteration for cleaner looking printing
 		} else {
 			//else print without the double spaces as its not needed after the first iteration
-			fmt.Printf("%d ", y)
+			boardColor.Printf("%d ", y)
 		}
 	}
 	fmt.Println() //Go to a new line
@@ -190,51 +189,52 @@ func playerBoard1(hide bool) {
 	//iterate over the Y axis and use the key to get the value to print position/letter
 	for x := range player1Board {
 		//use the key to as the letter position and print it
-		fmt.Print(boardAxisY[x])
+		boardColor.Print(" " + boardAxisY[x] + " ")
 		//iterate over Y axis slice regardless of its value being 0 or 1
 		for y := 0; y <= (len(player1Board[x]) - 1); y++ {
 			if player1Board[x][y] == 0 && !hide {
 				//0 means there is a no ship there so print the empty marker
 				if y == 0 {
-					fmt.Print(" 0 ")
+					waterColor.Print(" 0 ")
 				} else if y == 9 {
-					fmt.Print("0  ")
+					waterColor.Print("0 ")
 				} else {
-					fmt.Print("0 ")
+					waterColor.Print("0 ")
 				}
 			} else if player1Board[x][y] == 1 && !hide {
 				//1 means there is a ship there so print the ship marker
 				if y == 0 {
-					fmt.Print(" S ")
+					shipColor.Print(" S ")
 				} else if y == 9 {
-					fmt.Print("S  ")
+					shipColor.Print("S ")
 				} else {
-					fmt.Print("S ")
+					shipColor.Print("S ")
 				}
 			} else if (player1Board[x][y] == 0 || player1Board[x][y] == 1) && hide {
 				//0 means there is a no ship there so print the empty marker
 				if y == 0 {
-					fmt.Print(" 0 ")
+					waterColor.Print(" 0 ")
 				} else if y == 9 {
-					fmt.Print("0  ")
+					waterColor.Print("0 ")
 				} else {
-					fmt.Print("0 ")
+					waterColor.Print("0 ")
 				}
 			} else if player1Board[x][y] == -1 {
 				//-1 means there is a shot ship there
 				if y == 0 {
-					fmt.Print(" X ")
+					shipShotColor.Print(" ")
+					shipShotColor.Print(" X ")
 				} else if y == 9 {
-					fmt.Print("X  ")
+					shipShotColor.Print("X ")
 				} else {
-					fmt.Print("X ")
+					shipShotColor.Print("X ")
 				}
 			} else {
 				//if its anything else then it means an empty area was shot
 				if y == 0 {
 					fmt.Print(" - ")
 				} else if y == 9 {
-					fmt.Print("-  ")
+					fmt.Print("- ")
 				} else {
 					fmt.Print("- ")
 				}
@@ -255,11 +255,10 @@ func playerBoard2(hide bool) {
 	//iterate the X axis and only grab the key to use as the position/number
 	for y := range boardAxisY {
 		if y == 0 {
-			//have double spaces at the first iteration for cleaner looking printing
-			fmt.Printf("  %d ", y)
+			boardColor.Printf("    %d ", y) //have double spaces at the first iteration for cleaner looking printing
 		} else {
 			//else print without the double spaces as its not needed after the first iteration
-			fmt.Printf("%d ", y)
+			boardColor.Printf("%d ", y)
 		}
 	}
 	fmt.Println() //Go to a new line
@@ -267,51 +266,52 @@ func playerBoard2(hide bool) {
 	//iterate over the Y axis and use the key to get the value to print position/letter
 	for x := range player2Board {
 		//use the key to as the letter position and print it
-		fmt.Print(boardAxisY[x])
+		boardColor.Print(" " + boardAxisY[x] + " ")
 		//iterate over Y axis slice regardless of its value being 0 or 1
 		for y := 0; y <= (len(player2Board[x]) - 1); y++ {
 			if player2Board[x][y] == 0 && !hide {
 				//0 means there is a no ship there so print the empty marker
 				if y == 0 {
-					fmt.Print(" 0 ")
+					waterColor.Print(" 0 ")
 				} else if y == 9 {
-					fmt.Print("0  ")
+					waterColor.Print("0 ")
 				} else {
-					fmt.Print("0 ")
+					waterColor.Print("0 ")
 				}
 			} else if player2Board[x][y] == 1 && !hide {
 				//1 means there is a ship there so print the ship marker
 				if y == 0 {
-					fmt.Print(" S ")
+					shipColor.Print(" S ")
 				} else if y == 9 {
-					fmt.Print("S  ")
+					shipColor.Print("S ")
 				} else {
-					fmt.Print("S ")
+					shipColor.Print("S ")
 				}
 			} else if (player2Board[x][y] == 0 || player2Board[x][y] == 1) && hide {
 				//0 means there is a no ship there so print the empty marker
 				if y == 0 {
-					fmt.Print(" 0 ")
+					waterColor.Print(" 0 ")
 				} else if y == 9 {
-					fmt.Print("0  ")
+					waterColor.Print("0 ")
 				} else {
-					fmt.Print("0 ")
+					waterColor.Print("0 ")
 				}
 			} else if player2Board[x][y] == -1 {
 				//-1 means there is a shot ship there
 				if y == 0 {
-					fmt.Print(" X ")
+					shipShotColor.Print(" ")
+					shipShotColor.Print(" X ")
 				} else if y == 9 {
-					fmt.Print("X  ")
+					shipShotColor.Print("X ")
 				} else {
-					fmt.Print("X ")
+					shipShotColor.Print("X ")
 				}
 			} else {
 				//if its anything else then it means an empty area was shot
 				if y == 0 {
 					fmt.Print(" - ")
 				} else if y == 9 {
-					fmt.Print("-  ")
+					fmt.Print("- ")
 				} else {
 					fmt.Print("- ")
 				}
