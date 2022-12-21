@@ -18,10 +18,10 @@ var (
 
 	turn = 1 //start the game at turn 1
 
-	gameChoices = []string{"1 VS BOT", "1 VS 1"}          //current gamemode options to show in the menu
-	menuChoices = []string{"Restart", "View Leaderboard"} //current gamemode options to show in the menu
-	gamemode    string                                    //holds the user chosen gamemode and will be used for when deciding what functions to run
-	playerWon   string                                    //holds who won the current game
+	gameChoices = []string{"1 VS BOT", "1 VS 1"} //current gamemode options to show in the menu
+	menuChoices = []string{"Restart", "Quit"}    //current gamemode options to show in the menu
+	gamemode    string                           //holds the user chosen gamemode and will be used for when deciding what functions to run
+	playerWon   string                           //holds who won the current game
 )
 
 type Ship struct {
