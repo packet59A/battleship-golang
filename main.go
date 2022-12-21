@@ -28,8 +28,9 @@ func main() {
 		fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
 		fmt.Printf("Gamemode Selected: %s\n", gamemode)
 
-		//startGame() //print the initial 10x10 board without any ships
-		fmt.Print("\033[H\033[2J")
+		startGame() //start the game by placing the ships on the board
+
+		fmt.Print("\033[H\033[2J") //Used to clear the console at the start of the game
 		fmt.Println("Ships have been placed on both boards")
 
 		//loop until gameOver is true
@@ -49,7 +50,7 @@ func main() {
 			fmt.Print("\033[H\033[2J") //clear console after each turn has finished
 		}
 
-		fmt.Printf("Congratulations %s for winning the game!\n", playerWon)
+		fmt.Printf("\n\nCongratulations %s for winning the game!\n\n", playerWon)
 		//game over print and show option to restart or exit
 	}
 

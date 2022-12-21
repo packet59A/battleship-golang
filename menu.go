@@ -49,7 +49,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	s := strings.Builder{}
-	s.WriteString("Battleship Golang by packet_sent\n\n")
 
 	//if game is finished then show another screen
 	if gameOver {
@@ -64,6 +63,7 @@ func (m model) View() string {
 			s.WriteString("\n")
 		}
 	} else {
+		s.WriteString("Battleship Golang by packet_sent\n\n")
 		s.WriteString("Please choose a gamemode:\n")
 		for i := 0; i < len(gameChoices); i++ {
 			if m.cursor == i {
